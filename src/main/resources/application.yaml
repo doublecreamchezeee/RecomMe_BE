@@ -6,19 +6,9 @@ server:
 spring:
   application:
     name: recomme_BE
-  datasource:
-    url: jdbc:postgresql://localhost:5434/db
-    username: postgres
-    password: 12345678
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-jwt:
-  signerKey: "Yb5l4M8yFuHoXXLrEecnyRJOAEbgU0sdoXh2rFHTdq3SJ4ikikIuJssfvn/xP//z"
-  valid-duration: 3600
-  refreshable-duration: 360000
+
+com:
+  example:
+    firebase:
+      web-api-key: AIzaSyDsRZMGfdM_zZEUmaaBG1E2BqlIAOem5rM
+      private-key: private-key.json
