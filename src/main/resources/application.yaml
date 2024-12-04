@@ -10,5 +10,5 @@ spring:
 com:
   example:
     firebase:
-      web-api-key: AIzaSyDsRZMGfdM_zZEUmaaBG1E2BqlIAOem5rM
+      web-api-key: AIzaSyAGEUVFK5U8ZzdFbIvHhsix_BRKoMUkOyo
       private-key: private-key.json
