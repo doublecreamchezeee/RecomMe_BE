@@ -4,12 +4,10 @@ import com.example.recomme_be.configuration.PublicEndpoint;
 import com.example.recomme_be.dto.request.auth.UserCreationRequest;
 import com.example.recomme_be.dto.request.auth.UserLoginRequest;
 import com.example.recomme_be.dto.request.auth.UserUpdateRequest;
-import com.example.recomme_be.dto.response.auth.FirebaseGoogleSignInResponse;
-import com.example.recomme_be.dto.response.auth.RefreshTokenSuccessResponse;
-import com.example.recomme_be.dto.response.auth.TokenSuccessResponse;
-import com.example.recomme_be.dto.response.auth.ValidatedTokenResponse;
+import com.example.recomme_be.dto.response.auth.*;
 import com.example.recomme_be.service.AuthService;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -85,5 +83,16 @@ public class AuthController {
     public ResponseEntity<ValidatedTokenResponse> validateToken(@RequestBody String token) {
         ValidatedTokenResponse response = authService.validateToken(token);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserInfoResponse> getUserInfo(
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "email", required = false) String email) {
+        if (userId == null && email == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        UserInfoResponse userInfo = authService.getUserInfo(userId, email);
+        return ResponseEntity.ok(userInfo);
     }
 }

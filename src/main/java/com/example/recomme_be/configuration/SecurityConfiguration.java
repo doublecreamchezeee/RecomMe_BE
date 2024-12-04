@@ -34,7 +34,7 @@ public class SecurityConfiguration {
     @SneakyThrows
     public SecurityFilterChain configure(final HttpSecurity http)  {
         http
-//                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionConfigurer -> exceptionConfigurer.authenticationEntryPoint(customAuthenticationEntryPoint))
                 .sessionManagement(sessionConfigurer -> sessionConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,9 +57,10 @@ public class SecurityConfiguration {
 
     private CorsConfigurationSource corsConfigurationSource() {
         final var corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.setAllowedOrigins(List.of("https://recomme-five.vercel.app"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Origin", "Content-Type", "Accept"));
+        corsConfiguration.setAllowCredentials(true);
 
         final var corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);

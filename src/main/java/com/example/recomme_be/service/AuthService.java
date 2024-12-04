@@ -4,10 +4,7 @@ import com.example.recomme_be.client.FirebaseAuthClient;
 import com.example.recomme_be.dto.request.auth.UserCreationRequest;
 import com.example.recomme_be.dto.request.auth.UserLoginRequest;
 import com.example.recomme_be.dto.request.auth.UserUpdateRequest;
-import com.example.recomme_be.dto.response.auth.FirebaseGoogleSignInResponse;
-import com.example.recomme_be.dto.response.auth.RefreshTokenSuccessResponse;
-import com.example.recomme_be.dto.response.auth.TokenSuccessResponse;
-import com.example.recomme_be.dto.response.auth.ValidatedTokenResponse;
+import com.example.recomme_be.dto.response.auth.*;
 import com.example.recomme_be.exception.AccountAlreadyExistsException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -109,6 +106,32 @@ public class AuthService {
             throw new RuntimeException("Error updating user: " + exception.getMessage(), exception);
         }
     }
+
+    public UserInfoResponse getUserInfo(String userId, String email) {
+        try {
+            UserRecord userRecord;
+            if (userId != null) {
+                userRecord = firebaseAuth.getUser(userId);
+            } else if (email != null) {
+                userRecord = firebaseAuth.getUserByEmail(email);
+            } else {
+                throw new IllegalArgumentException("Either userId or email must be provided.");
+            }
+
+            return UserInfoResponse.builder()
+                    .uid(userRecord.getUid())
+                    .email(userRecord.getEmail())
+                    .displayName(userRecord.getDisplayName())
+                    .emailVerified(userRecord.isEmailVerified())
+                    .phoneNumber(userRecord.getPhoneNumber())
+                    .photoUrl(userRecord.getPhotoUrl())
+                    .build();
+
+        } catch (FirebaseAuthException e) {
+            throw new RuntimeException("Error retrieving user information: " + e.getMessage(), e);
+        }
+    }
+
 
     public ValidatedTokenResponse validateToken(@NonNull final String token) {
         try {
