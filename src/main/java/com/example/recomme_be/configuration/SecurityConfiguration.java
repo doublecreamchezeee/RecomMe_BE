@@ -57,9 +57,10 @@ public class SecurityConfiguration {
 
     private CorsConfigurationSource corsConfigurationSource() {
         final var corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("https://recomme-five.vercel.app"));
+        corsConfiguration.setAllowedOrigins(List.of("https://recomme-five.vercel.app", "http://localhost:3000"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Origin", "Content-Type", "Accept"));
+        corsConfiguration.setExposedHeaders(List.of("Authorization"));
         corsConfiguration.setAllowCredentials(true);
 
         final var corsConfigurationSource = new UrlBasedCorsConfigurationSource();

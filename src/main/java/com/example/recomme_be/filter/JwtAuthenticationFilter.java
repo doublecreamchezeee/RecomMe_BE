@@ -129,4 +129,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         out.print(JsonUtility.convertObjectToJson(errorResponse.getBody()));
         out.flush();
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
 }
