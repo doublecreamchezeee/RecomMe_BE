@@ -1,4 +1,4 @@
-package com.example.recomme_be.configuration;
+package com.example.recomme_be.configuration.core;
 
 import com.example.recomme_be.filter.JwtAuthenticationFilter;
 import com.example.recomme_be.utility.ApiEndpointSecurityInspector;

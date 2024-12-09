@@ -1,4 +1,4 @@
-package com.example.recomme_be.configuration;
+package com.example.recomme_be.configuration.core;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

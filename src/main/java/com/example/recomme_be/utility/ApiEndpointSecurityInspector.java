@@ -1,6 +1,6 @@
 package com.example.recomme_be.utility;
 
-import com.example.recomme_be.configuration.PublicEndpoint;
+import com.example.recomme_be.configuration.core.PublicEndpoint;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;

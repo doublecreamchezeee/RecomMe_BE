@@ -1,13 +1,12 @@
 package com.example.recomme_be.controller;
 
-import com.example.recomme_be.configuration.PublicEndpoint;
+import com.example.recomme_be.configuration.core.PublicEndpoint;
 import com.example.recomme_be.dto.request.auth.UserCreationRequest;
 import com.example.recomme_be.dto.request.auth.UserLoginRequest;
 import com.example.recomme_be.dto.request.auth.UserUpdateRequest;
 import com.example.recomme_be.dto.response.auth.*;
 import com.example.recomme_be.service.AuthService;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -43,9 +42,9 @@ public class AuthController {
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // Use secure flag in production
-        refreshTokenCookie.setPath("/"); // Make the cookie available site-wide
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 1 week expiration
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
         response.addCookie(refreshTokenCookie);
 
 

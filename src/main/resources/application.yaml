@@ -10,5 +10,8 @@ spring:
 com:
   example:
     firebase:
-      web-api-key: AIzaSyAGEUVFK5U8ZzdFbIvHhsix_BRKoMUkOyo
+      web-api-key: ${FIREBASE_WEB_API_KEY}
       private-key: private-key.json
+tmdb:
+  api:
+    key: ${TMDB_API_KEY}
