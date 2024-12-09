@@ -24,4 +24,12 @@ public class MovieService {
                 .map(movieMapper::toMovieResponse)
                 .collect(Collectors.toList());
     }
+
+    public List<MovieResponse> getTrendingMovies(String timeWindow) {
+        List<Movie> trendingMovies = tmdbClient.fetchTrendingMovies(timeWindow);
+
+        return trendingMovies.stream()
+                .map(movieMapper::toMovieResponse)
+                .collect(Collectors.toList());
+    }
 }

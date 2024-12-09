@@ -24,7 +24,7 @@ public class MovieController {
 
         if (popularMovies.isEmpty()) {
             return ApiResponse.<List<MovieResponse>>builder()
-                    .code(200)
+                    .code(404)
                     .message("No popular movies found")
                     .result(popularMovies)
                     .build();
@@ -35,5 +35,34 @@ public class MovieController {
                     .result(popularMovies)
                     .build();
         }
+    }
+
+    @GetMapping("/trending")
+    public ApiResponse<List<MovieResponse>> getTrendingMovies(
+            @RequestParam(defaultValue = "day") String timeWindow) {
+
+        if (!timeWindow.equals("day") && !timeWindow.equals("week")) {
+            return ApiResponse.<List<MovieResponse>>builder()
+                    .code(400)
+                    .message("Invalid time window. Please use 'day' or 'week'.")
+                    .result(null)
+                    .build();
+        }
+
+        List<MovieResponse> trendingMovies = movieService.getTrendingMovies(timeWindow);
+
+        if (trendingMovies.isEmpty()) {
+            return ApiResponse.<List<MovieResponse>>builder()
+                    .code(404)
+                    .message("No trending movies found")
+                    .result(trendingMovies)
+                    .build();
+        }
+
+        return ApiResponse.<List<MovieResponse>>builder()
+                .code(200)
+                .message("Fetched trending movies successfully")
+                .result(trendingMovies)
+                .build();
     }
 }
