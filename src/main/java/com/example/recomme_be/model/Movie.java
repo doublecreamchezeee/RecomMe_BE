@@ -4,12 +4,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Getter
-@Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-@AllArgsConstructor
 public class Movie {
     int id;
     String title;

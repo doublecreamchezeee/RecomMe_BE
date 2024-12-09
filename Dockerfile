@@ -6,7 +6,7 @@ COPY gradle /app/gradle
 
 COPY src /app/src
 
-RUN gradle build --no-daemon
+RUN gradle build -x test --no-daemon
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app

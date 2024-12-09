@@ -1,0 +1,8 @@
+services:
+  app:
+    image: tuantruong03/recomme_be:v.0.0.1
+    container_name: recomme_be
+    ports:
+      - "8888:8888" # Map the container's port 8888 to the host's port 8888
+    env_file:
+      - .env # Reference the .env file

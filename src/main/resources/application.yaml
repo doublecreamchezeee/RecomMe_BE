@@ -1,7 +1,7 @@
 server:
   servlet:
     context-path: /api
-  port: 8888
+  port: ${PORT:8888}
 
 spring:
   application:

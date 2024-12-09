@@ -1,15 +1,13 @@
 package com.example.recomme_be.controller;
 
 import com.example.recomme_be.dto.ApiResponse;
-import com.example.recomme_be.dto.request.movie.MovieRequest;
-import com.example.recomme_be.dto.response.movie.MovieResponse;
-import com.example.recomme_be.mapper.MovieMapper;
-import com.example.recomme_be.model.Movie;
+import com.example.recomme_be.dto.response.movie.DetailTmdbMovieResponse;
+import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.service.MovieService;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/movies")
@@ -19,50 +17,99 @@ public class MovieController {
     private final MovieService movieService;
 
     @GetMapping("/popular")
-    public ApiResponse<List<MovieResponse>> getPopularMovies() {
-        List<MovieResponse> popularMovies = movieService.getPopularMovies();
+    public ApiResponse<TmdbMovieListResponse> getPopularMovies() {
+        TmdbMovieListResponse tmdbMovieListResponse = movieService.getPopularMovies();
 
-        if (popularMovies.isEmpty()) {
-            return ApiResponse.<List<MovieResponse>>builder()
+        if (tmdbMovieListResponse == null) {
+            return ApiResponse.<TmdbMovieListResponse>builder()
                     .code(404)
                     .message("No popular movies found")
-                    .result(popularMovies)
+                    .result(null)
                     .build();
         } else {
-            return ApiResponse.<List<MovieResponse>>builder()
+            return ApiResponse.<TmdbMovieListResponse>builder()
                     .code(200)
                     .message("Fetched popular movies successfully")
-                    .result(popularMovies)
+                    .result(tmdbMovieListResponse)
                     .build();
         }
     }
 
     @GetMapping("/trending")
-    public ApiResponse<List<MovieResponse>> getTrendingMovies(
+    public ApiResponse<TmdbMovieListResponse> getTrendingMovies(
             @RequestParam(defaultValue = "day") String timeWindow) {
 
         if (!timeWindow.equals("day") && !timeWindow.equals("week")) {
-            return ApiResponse.<List<MovieResponse>>builder()
+            return ApiResponse.<TmdbMovieListResponse>builder()
                     .code(400)
                     .message("Invalid time window. Please use 'day' or 'week'.")
                     .result(null)
                     .build();
         }
 
-        List<MovieResponse> trendingMovies = movieService.getTrendingMovies(timeWindow);
+        TmdbMovieListResponse tmdbMovieListResponse = movieService.getTrendingMovies(timeWindow);
 
-        if (trendingMovies.isEmpty()) {
-            return ApiResponse.<List<MovieResponse>>builder()
+        if (tmdbMovieListResponse == null) {
+            return ApiResponse.<TmdbMovieListResponse>builder()
                     .code(404)
                     .message("No trending movies found")
-                    .result(trendingMovies)
+                    .result(null)
                     .build();
         }
 
-        return ApiResponse.<List<MovieResponse>>builder()
+        return ApiResponse.<TmdbMovieListResponse>builder()
                 .code(200)
                 .message("Fetched trending movies successfully")
-                .result(trendingMovies)
+                .result(tmdbMovieListResponse)
+                .build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<TmdbMovieListResponse> searchMovies(
+            @RequestParam(name = "keyword") String keyword) {
+
+        if (keyword == null || keyword.isBlank()) {
+            return ApiResponse.<TmdbMovieListResponse>builder()
+                    .code(400)
+                    .message("Please provide a keyword")
+                    .result(null)
+                    .build();
+        }
+
+        TmdbMovieListResponse tmdbMovieListResponse = movieService.search(keyword);
+
+        if (tmdbMovieListResponse == null) {
+            return ApiResponse.<TmdbMovieListResponse>builder()
+                    .code(404)
+                    .message("No movies found")
+                    .result(null)
+                    .build();
+        }
+
+        return ApiResponse.<TmdbMovieListResponse>builder()
+                .code(200)
+                .message("Fetched movies with keyword successfully")
+                .result(tmdbMovieListResponse)
+                .build();
+    }
+
+    @GetMapping("/{movieId}")
+    public ApiResponse<DetailTmdbMovieResponse> getDetailMovie (
+            @PathVariable(name = "movieId") @NotBlank(message = "Movie ID must not be empty") String movieId) {
+        DetailTmdbMovieResponse detailTmdbMovieResponse = movieService.getDetailMovie(movieId);
+
+        if (detailTmdbMovieResponse == null) {
+            return ApiResponse.<DetailTmdbMovieResponse>builder()
+                    .code(404)
+                    .message("Movie not found")
+                    .result(null)
+                    .build();
+        }
+
+        return ApiResponse.<DetailTmdbMovieResponse>builder()
+                .code(200)
+                .message("Fetched trending movies successfully")
+                .result(detailTmdbMovieResponse)
                 .build();
     }
 }
