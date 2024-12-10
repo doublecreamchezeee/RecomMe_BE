@@ -1,6 +1,8 @@
 package com.example.recomme_be.controller;
 
+import com.example.recomme_be.configuration.core.PublicEndpoint;
 import com.example.recomme_be.dto.ApiResponse;
+import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.DetailTmdbMovieResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.service.MovieService;
@@ -16,6 +18,7 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    @PublicEndpoint
     @GetMapping("/popular")
     public ApiResponse<TmdbMovieListResponse> getPopularMovies() {
         TmdbMovieListResponse tmdbMovieListResponse = movieService.getPopularMovies();
@@ -35,6 +38,7 @@ public class MovieController {
         }
     }
 
+    @PublicEndpoint
     @GetMapping("/trending")
     public ApiResponse<TmdbMovieListResponse> getTrendingMovies(
             @RequestParam(defaultValue = "day") String timeWindow) {
@@ -64,19 +68,20 @@ public class MovieController {
                 .build();
     }
 
+    @PublicEndpoint
     @GetMapping("/search")
     public ApiResponse<TmdbMovieListResponse> searchMovies(
-            @RequestParam(name = "keyword") String keyword) {
+            @ModelAttribute MovieSearchRequest movieSearchRequest) {
 
-        if (keyword == null || keyword.isBlank()) {
+        if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
             return ApiResponse.<TmdbMovieListResponse>builder()
                     .code(400)
-                    .message("Please provide a keyword")
+                    .message("Please provide a query")
                     .result(null)
                     .build();
         }
 
-        TmdbMovieListResponse tmdbMovieListResponse = movieService.search(keyword);
+        TmdbMovieListResponse tmdbMovieListResponse = movieService.search(movieSearchRequest);
 
         if (tmdbMovieListResponse == null) {
             return ApiResponse.<TmdbMovieListResponse>builder()
@@ -93,6 +98,7 @@ public class MovieController {
                 .build();
     }
 
+    @PublicEndpoint
     @GetMapping("/{movieId}")
     public ApiResponse<DetailTmdbMovieResponse> getDetailMovie (
             @PathVariable(name = "movieId") @NotBlank(message = "Movie ID must not be empty") String movieId) {

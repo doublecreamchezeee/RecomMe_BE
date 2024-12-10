@@ -1,6 +1,7 @@
 package com.example.recomme_be.service;
 
 import com.example.recomme_be.client.TmdbClient;
+import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.DetailTmdbMovieResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class MovieService {
         return tmdbClient.fetchDetailMovie(movieId);
     }
 
-    public TmdbMovieListResponse search(String query) {
-        return tmdbClient.searchMovie(query);
+    public TmdbMovieListResponse search(MovieSearchRequest movieSearchRequest) {
+        return tmdbClient.searchMovie(movieSearchRequest);
     }
 }

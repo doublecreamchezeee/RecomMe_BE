@@ -1,5 +1,6 @@
 package com.example.recomme_be.client;
 
+import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.DetailTmdbMovieResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import lombok.RequiredArgsConstructor;
@@ -97,21 +98,45 @@ public class TmdbClient {
         }
     }
 
-    public  TmdbMovieListResponse searchMovie(String keyword) {
+    public TmdbMovieListResponse searchMovie(MovieSearchRequest movieSearchRequest) {
+        // Build query parameters dynamically based on MovieSearchRequest
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add(API_KEY_PARAM, apiKey);
-        queryParams.add("query", keyword);
+
+        if (movieSearchRequest.getQuery() != null) {
+            queryParams.add("query", movieSearchRequest.getQuery());
+        }
+        if (movieSearchRequest.getIncludeAdult() != null) {
+            queryParams.add("include_adult", movieSearchRequest.getIncludeAdult().toString());
+        }
+        if (movieSearchRequest.getLanguage() != null) {
+            queryParams.add("language", movieSearchRequest.getLanguage());
+        }
+        if (movieSearchRequest.getPrimaryReleaseYear() != null) {
+            queryParams.add("primary_release_year", movieSearchRequest.getPrimaryReleaseYear());
+        }
+        if (movieSearchRequest.getPage() != null) {
+            queryParams.add("page", movieSearchRequest.getPage().toString());
+        }
+        if (movieSearchRequest.getRegion() != null) {
+            queryParams.add("region", movieSearchRequest.getRegion());
+        }
+        if (movieSearchRequest.getYear() != null) {
+            queryParams.add("year", movieSearchRequest.getYear());
+        }
+
+        // Construct the URI
         String url = UriComponentsBuilder.fromUriString(BASE_URL + "/search/movie")
                 .queryParams(queryParams)
                 .toUriString();
+
         try {
             // Fetch the response from the TMDB API
             return restTemplate.getForObject(url, TmdbMovieListResponse.class);
         } catch (Exception e) {
-            logger.error("Error search movie: {}", e.getMessage());
-            return null;
+            logger.error("Error searching movie: {}", e.getMessage());
+            throw new RuntimeException("Failed to fetch movies from TMDB", e);
         }
     }
-
 
 }
