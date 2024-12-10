@@ -1,12 +1,12 @@
 server:
   servlet:
     context-path: /api
-  port: 8888
+  port: ${PORT:8888}
 
 spring:
   application:
     name: recomme_BE
-
+ 
 com:
   example:
     firebase:
