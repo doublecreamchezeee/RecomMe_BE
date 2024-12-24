@@ -1,9 +1,11 @@
 package com.example.recomme_be.service;
 
 import com.example.recomme_be.client.TmdbClient;
+import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.DetailTmdbMovieResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
+import com.example.recomme_be.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +15,13 @@ public class MovieService {
 
     private final TmdbClient tmdbClient;
 
-    public TmdbMovieListResponse getPopularMovies() {
-        return tmdbClient.fetchPopularMovies();
+    private final MovieRepository movieRepository;
+
+    public TmdbMovieListResponse getPopularMovies(MoviePopularRequest moviePopularRequest) {
+        var movies = movieRepository.getPopular(moviePopularRequest);
+        return TmdbMovieListResponse.builder().page(moviePopularRequest.getPage())
+                .results(movies)
+                .build();
     }
 
     public TmdbMovieListResponse getTrendingMovies(String timeWindow) {

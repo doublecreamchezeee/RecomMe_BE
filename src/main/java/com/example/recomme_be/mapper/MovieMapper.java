@@ -1,10 +1,9 @@
 package com.example.recomme_be.mapper;
 
-import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+
+//@Mapper(componentModel = "spring")
 public interface MovieMapper {
-
 //    @Mappings({
 //            @Mapping(target = "id", ignore = true),  // Ignore the id field since MovieRequest doesn't have it
 //            @Mapping(target = "title", source = "title"),  // Mapping title to title
@@ -14,4 +13,6 @@ public interface MovieMapper {
 //    })
 //    Movie toMovie(MovieRequest movieRequest);
 
+//    SummaryMovieResponse fromModelToSummaryResponse(Movie movie);
+//    List<SummaryMovieResponse> fromModelsToSummariesResponse(List<Movie> movie);
 }

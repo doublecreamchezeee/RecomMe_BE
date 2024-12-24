@@ -2,6 +2,7 @@ package com.example.recomme_be.controller;
 
 import com.example.recomme_be.configuration.core.PublicEndpoint;
 import com.example.recomme_be.dto.ApiResponse;
+import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.DetailTmdbMovieResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
@@ -20,9 +21,8 @@ public class MovieController {
 
     @PublicEndpoint
     @GetMapping("/popular")
-    public ApiResponse<TmdbMovieListResponse> getPopularMovies() {
-        TmdbMovieListResponse tmdbMovieListResponse = movieService.getPopularMovies();
-
+    public ApiResponse<TmdbMovieListResponse> getPopularMovies(@ModelAttribute MoviePopularRequest  moviePopularRequest) {
+        TmdbMovieListResponse tmdbMovieListResponse = movieService.getPopularMovies(moviePopularRequest);
         if (tmdbMovieListResponse == null) {
             return ApiResponse.<TmdbMovieListResponse>builder()
                     .code(404)

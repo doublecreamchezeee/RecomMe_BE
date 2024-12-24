@@ -6,7 +6,10 @@ server:
 spring:
   application:
     name: recomme_BE
- 
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+
 com:
   example:
     firebase:
