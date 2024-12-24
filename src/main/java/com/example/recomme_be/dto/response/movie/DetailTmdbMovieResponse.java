@@ -1,9 +1,59 @@
 package com.example.recomme_be.dto.response.movie;
 
+import com.example.recomme_be.model.Cast;
+import com.example.recomme_be.model.Crew;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+class CollectionResponse {
+    int id;
+    String name;
+    String poster_path;
+    String backdrop_path;
+}
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+class Genre {
+    int id;
+    String name;
+}
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+class ProductionCompanyResponse {
+    int id;
+    String logo_path;
+    String name;
+    String origin_country;
+}
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+class ProductionCountryResponse {
+    String iso_3166_1;
+    String name;
+}
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+class SpokenLanguageResponse {
+    String english_name;
+    String iso_639_1;
+    String name;
+}
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+class CreditResponse {
+    int id;
+    Cast cast;
+    Crew crew;
+}
 
 @Data
 @Builder
@@ -35,44 +85,5 @@ public class DetailTmdbMovieResponse {
     boolean video;
     double vote_average;
     int vote_count;
-
-    @Data
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class CollectionResponse {
-        int id;
-        String name;
-        String poster_path;
-        String backdrop_path;
-    }
-
-    @Data
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class Genre {
-        int id;
-        String name;
-    }
-
-    @Data
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class ProductionCompanyResponse {
-        int id;
-        String logo_path;
-        String name;
-        String origin_country;
-    }
-
-    @Data
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class ProductionCountryResponse {
-        String iso_3166_1;
-        String name;
-    }
-
-    @Data
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class SpokenLanguageResponse {
-        String english_name;
-        String iso_639_1;
-        String name;
-    }
+    CreditResponse credits;
 }
