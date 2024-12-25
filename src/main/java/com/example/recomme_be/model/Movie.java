@@ -62,6 +62,8 @@ class Credit {
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Document
+@AllArgsConstructor
+@NoArgsConstructor
 public class Movie {
     public static final String COLLECTION = "movies";
     public static final String NOW_PLAYING_COLLECTION = "movies_now_playing";

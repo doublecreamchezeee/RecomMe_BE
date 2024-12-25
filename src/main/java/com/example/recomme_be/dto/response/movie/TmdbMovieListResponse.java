@@ -1,5 +1,6 @@
 package com.example.recomme_be.dto.response.movie;
 
+import com.example.recomme_be.model.Movie;
 import com.mongodb.DBObject;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import java.util.List;
 public class TmdbMovieListResponse {
 
     int page;
-    List<DBObject> results;
+    List<Movie> results;
     int total_pages;
     int total_results;
 
