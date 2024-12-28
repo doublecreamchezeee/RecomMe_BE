@@ -2,16 +2,16 @@ package com.example.recomme_be.repository;
 
 import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
-import com.example.recomme_be.model.Movie;
+import com.mongodb.DBObject;
 
 import java.util.List;
 
 public interface MovieRepository {
-    List<Movie> getPopular(MoviePopularRequest request);
+    List<DBObject> getPopular(MoviePopularRequest request);
 
-    List<Movie> getTrending(String timeWindow);
+    List<DBObject> getTrending(String timeWindow);
 
-    Movie getDetail(String movieId);
+    DBObject getDetail(String movieId);
 
-    List<Movie> search(MovieSearchRequest request);
+    List<DBObject> search(MovieSearchRequest request);
 }

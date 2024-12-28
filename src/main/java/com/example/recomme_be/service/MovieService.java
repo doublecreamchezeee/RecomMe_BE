@@ -3,8 +3,8 @@ package com.example.recomme_be.service;
 import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
-import com.example.recomme_be.model.Movie;
 import com.example.recomme_be.repository.MovieRepository;
+import com.mongodb.DBObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,7 @@ public class MovieService {
                 .build();
     }
 
-    public Movie getDetailMovie(String movieId) {
+    public DBObject getDetailMovie(String movieId) {
         return movieRepository.getDetail(movieId);
     }
 
