@@ -29,6 +29,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("com.nimbusds:nimbus-jose-jwt:9.15.2")
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
