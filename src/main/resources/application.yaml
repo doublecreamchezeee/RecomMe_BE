@@ -9,6 +9,17 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp: # Correct the spelling here
+          auth: true
+          starttls:
+            enable: true  # Add a space after the colon
 
 com:
   example:

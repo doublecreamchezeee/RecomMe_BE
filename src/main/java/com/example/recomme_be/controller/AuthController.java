@@ -1,9 +1,8 @@
 package com.example.recomme_be.controller;
 
 import com.example.recomme_be.configuration.core.PublicEndpoint;
-import com.example.recomme_be.dto.request.auth.UserCreationRequest;
-import com.example.recomme_be.dto.request.auth.UserLoginRequest;
-import com.example.recomme_be.dto.request.auth.UserUpdateRequest;
+import com.example.recomme_be.dto.ApiResponse;
+import com.example.recomme_be.dto.request.auth.*;
 import com.example.recomme_be.dto.response.auth.*;
 import com.example.recomme_be.service.AuthService;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -59,11 +57,6 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<HttpStatus> updateUserByEmail(@RequestParam("email") String email, @Validated @RequestBody UserUpdateRequest userUpdateRequest) {
-        authService.updateByEmail(email, userUpdateRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 
     @PublicEndpoint
     @PostMapping(value = "/refresh", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -84,14 +77,19 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserInfoResponse> getUserInfo(
-            @RequestParam(value = "userId", required = false) String userId,
-            @RequestParam(value = "email", required = false) String email) {
-        if (userId == null && email == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        UserInfoResponse userInfo = authService.getUserInfo(userId, email);
-        return ResponseEntity.ok(userInfo);
+    @PublicEndpoint
+    @PostMapping("forgotPassword")
+    public ResponseEntity<ApiResponse> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request) {
+        return  authService.forgotPassword(request) ? ResponseEntity.ok(ApiResponse.builder().message("Password updated").build())
+                 : ResponseEntity.status(400).body(ApiResponse.builder().message("Invalid email or otp code").code(400).build());
     }
+
+    @PublicEndpoint
+    @PostMapping("activateAccount")
+    public ResponseEntity<ApiResponse> activateAccount(@RequestBody @Valid ActivateAccountRequest request) {
+
+        return authService.activateAccount(request) ? ResponseEntity.ok(ApiResponse.builder().message("Account activated").build())
+                : ResponseEntity.status(400).body(ApiResponse.builder().message("Invalid email or otp code").code(400).build());
+    }
+
 }
