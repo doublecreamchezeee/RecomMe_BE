@@ -7,6 +7,7 @@ import com.example.recomme_be.dto.response.RetrieverResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.model.*;
 import com.example.recomme_be.repository.MovieRepository;
+import com.example.recomme_be.repository.RatingRepository;
 import com.example.recomme_be.repository.ReviewRepository;
 import com.example.recomme_be.repository.SearchHistoryRepository;
 import com.mongodb.DBObject;
@@ -28,6 +29,7 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final SearchHistoryRepository searchHistoryRepository;
     private final ReviewRepository reviewRepository;
+    private final RatingRepository ratingRepository;
 
     public TmdbMovieListResponse getPopularMovies(MoviePopularRequest request) {
         var movies = movieRepository.getPopular(request);
@@ -114,8 +116,20 @@ public class MovieService {
     }
 
     // Rate a movie
-    public void rateMovie(MovieRatingUpdateRequest request) {
+    public Rating rateMovie(MovieRatingUpdateRequest request) {
+        Rating userRating = Rating.builder()
+                .movieId(request.getMovieId())
+                .rating(request.getRating())
+                .userId(request.getUserId())
+                .build();
+        ratingRepository.save(userRating);
         movieRepository.updateMovieRating(request.getMovieId(), request.getRating());
+        return userRating;
+    }
+
+    public List<Rating> getListRating(String userId) {
+        return ratingRepository.findAllByUserId(userId);
+
     }
 
     // Add a review for a movie

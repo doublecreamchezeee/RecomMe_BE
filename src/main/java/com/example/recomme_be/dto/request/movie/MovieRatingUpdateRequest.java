@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class MovieRatingUpdateRequest {
     private String movieId;    // Movie ID to identify the movie
-    private double rating;  // New rating value to update
+    private double rating;
+    private String userId;
 }
