@@ -17,5 +17,7 @@ public interface MovieRepository {
 
     List<DBObject> search(MovieSearchRequest request);
 
+    void updateMovieRating(String movieId, double newRating);
+
 //    List<DBObject> getMovies(List<String> movieIds);
 }

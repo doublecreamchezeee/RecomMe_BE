@@ -1,4 +1,4 @@
-package com.example.recomme_be.dto.request;
+package com.example.recomme_be.dto.request.movie;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

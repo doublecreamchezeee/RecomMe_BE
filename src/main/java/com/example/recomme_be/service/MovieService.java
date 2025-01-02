@@ -1,7 +1,7 @@
 package com.example.recomme_be.service;
 
-import com.example.recomme_be.dto.request.RetrieverRequest;
 import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
+import com.example.recomme_be.dto.request.movie.MovieRatingUpdateRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.RetrieverResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
@@ -116,19 +116,8 @@ public class MovieService {
     }
 
     // Rate a movie
-    public Rating rateMovie(String movieId, String userId, double ratingValue) {
-        // Check if the user has already rated the movie
-        Rating existingRating = ratingRepository.findByMovieIdAndUserId(movieId, userId);
-        if (existingRating != null) {
-            existingRating.setRating(ratingValue);  // Update rating if exists
-            return ratingRepository.save(existingRating);
-        } else {
-            Rating newRating = new Rating();
-            newRating.setMovieId(movieId);
-            newRating.setUserId(userId);
-            newRating.setRating(ratingValue);
-            return ratingRepository.save(newRating);
-        }
+    public void rateMovie(MovieRatingUpdateRequest request) {
+        movieRepository.updateMovieRating(request.getMovieId(), request.getRating());
     }
 
     // Add a review for a movie

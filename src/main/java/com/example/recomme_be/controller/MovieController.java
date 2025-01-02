@@ -3,6 +3,7 @@ package com.example.recomme_be.controller;
 import com.example.recomme_be.configuration.core.PublicEndpoint;
 import com.example.recomme_be.dto.ApiResponse;
 import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
+import com.example.recomme_be.dto.request.movie.MovieRatingUpdateRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.model.Rating;
@@ -12,6 +13,7 @@ import com.example.recomme_be.service.MovieService;
 import com.mongodb.DBObject;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -124,14 +126,22 @@ import java.util.List;
                 .build();
     }
 
-    @PostMapping("/{movieId}/rate")
-    public ApiResponse<Rating> rateMovie(@PathVariable String movieId, @RequestParam String userId, @RequestParam double rating) {
-        Rating ratedMovie = movieService.rateMovie(movieId, userId, rating);
-        return ApiResponse.<Rating>builder()
-                .code(200)
-                .message("Movie rated successfully")
-                .result(ratedMovie)
-                .build();
+    @PostMapping("/rate")
+    public ApiResponse<Void> rateMovie(@RequestBody MovieRatingUpdateRequest request) {
+        try {
+            // Call the service to update the movie rating
+            movieService.rateMovie(request);
+            return ApiResponse.<Void>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Movie rating updated successfully.")
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<Void>builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .message("Error updating movie rating: " + e.getMessage())
+                    .build();
+        }
+
     }
 
     // Add review for a movie

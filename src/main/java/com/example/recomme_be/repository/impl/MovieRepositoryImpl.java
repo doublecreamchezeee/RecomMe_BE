@@ -8,11 +8,14 @@ import com.mongodb.DBObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.ConvertOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Repository
@@ -83,6 +86,36 @@ public class MovieRepositoryImpl implements MovieRepository {
         }
         query.skip((request.getPage() - 1L) * 20L).limit(20);
         return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
+    }
+
+    @Override
+    public void updateMovieRating(String movieId, double newRating) {
+        // Query to find the movie by ID
+        Query query = new Query(Criteria.where("id").is(Integer.parseInt(movieId)));
+
+        // Retrieve the current movie details
+        DBObject movie = mongoTemplate.findOne(query, DBObject.class, Movie.COLLECTION);
+        if (movie == null) {
+            throw new IllegalArgumentException("Movie not found with ID: " + movieId);
+        }
+
+        // Get current vote_average and vote_count
+        double currentVoteAverage = Double.parseDouble(movie.get("vote_average").toString());
+        int currentVoteCount = Integer.parseInt(movie.get("vote_count").toString());
+
+        // Calculate new vote_average and increment vote_count
+        double updatedVoteAverage =
+                (currentVoteAverage * currentVoteCount + newRating) / (currentVoteCount + 1);
+        int updatedVoteCount = currentVoteCount + 1;
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        // Update operation
+        Update update = new Update()
+                .set("vote_average", df.format(updatedVoteAverage))
+                .set("vote_count", updatedVoteCount);
+
+        // Perform the update
+        mongoTemplate.updateFirst(query, update, Movie.COLLECTION);
     }
 
 }
