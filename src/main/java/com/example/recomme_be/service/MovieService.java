@@ -7,7 +7,6 @@ import com.example.recomme_be.dto.response.RetrieverResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.model.*;
 import com.example.recomme_be.repository.MovieRepository;
-import com.example.recomme_be.repository.RatingRepository;
 import com.example.recomme_be.repository.ReviewRepository;
 import com.example.recomme_be.repository.SearchHistoryRepository;
 import com.mongodb.DBObject;
@@ -28,7 +27,6 @@ public class MovieService {
     private final RetrieverService retrieverService;
     private final MovieRepository movieRepository;
     private final SearchHistoryRepository searchHistoryRepository;
-    private final RatingRepository ratingRepository;
     private final ReviewRepository reviewRepository;
 
     public TmdbMovieListResponse getPopularMovies(MoviePopularRequest request) {

@@ -6,7 +6,6 @@ import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieRatingUpdateRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
-import com.example.recomme_be.model.Rating;
 import com.example.recomme_be.model.Review;
 import com.example.recomme_be.model.SearchHistory;
 import com.example.recomme_be.service.MovieService;
@@ -166,4 +165,5 @@ import java.util.List;
                 .result(reviews)
                 .build();
     }
+
 }
