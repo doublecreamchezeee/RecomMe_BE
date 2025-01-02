@@ -1,7 +1,9 @@
 package com.example.recomme_be.service;
 
+import com.example.recomme_be.dto.request.RetrieverRequest;
 import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
+import com.example.recomme_be.dto.response.RetrieverResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.model.*;
 import com.example.recomme_be.repository.MovieRepository;
@@ -10,6 +12,8 @@ import com.example.recomme_be.repository.ReviewRepository;
 import com.example.recomme_be.repository.SearchHistoryRepository;
 import com.mongodb.DBObject;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MovieService {
-    private final LlmApiService llmApiService;
+    private static final Logger log = LoggerFactory.getLogger(MovieService.class);
+    private final RetrieverService retrieverService;
     private final MovieRepository movieRepository;
     private final SearchHistoryRepository searchHistoryRepository;
     private final RatingRepository ratingRepository;
@@ -54,9 +59,43 @@ public class MovieService {
     }
 
     public TmdbMovieListResponse searchMoviesWithLLM(MovieSearchRequest request) {
-        String refinedQuery = llmApiService.processQuery(request.getQuery());
-        request.setQuery(refinedQuery);
-        var movies = movieRepository.search(request);
+        // Step 1: Call RetrieverService to get a list of movie IDs
+        RetrieverResponse retrieverResponse = retrieverService.search(
+                "movies", request.getQuery(), 10, 0.5);
+
+        // Step 2: Extract movie IDs from the retriever response
+        List<String> movieIds = retrieverResponse.getData().getResult();
+        if (movieIds.isEmpty()) {
+            return TmdbMovieListResponse.builder()
+                    .page(request.getPage())
+                    .results(List.of()) // Empty result
+                    .build();
+        }
+
+        // Step 3: Iterate over IDs and retrieve movie details
+        List<DBObject> movies = movieIds.stream()
+                .map(movieId -> {
+                    try {
+                        // Use existing repository method to get details
+                        return movieRepository.getDetailWithObjectId(movieId);
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                        // Log error if needed and skip invalid results
+                        return null;
+                    }
+                })
+                .filter(java.util.Objects::nonNull) // Filter out null results
+                .toList();
+
+        // Step 4: Check if no valid movies were found
+        if (movies.isEmpty()) {
+            return TmdbMovieListResponse.builder()
+                    .page(request.getPage())
+                    .results(List.of()) // Empty result
+                    .build();
+        }
+
+        // Step 5: Return movies in the response
         return TmdbMovieListResponse.builder()
                 .page(request.getPage())
                 .results(movies)

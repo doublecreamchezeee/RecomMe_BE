@@ -8,6 +8,7 @@ import com.mongodb.DBObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.ConvertOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -48,7 +49,14 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public DBObject getDetail(String movieId) {
-        Query query = new Query(Criteria.where("tmdb_id").is(movieId));
+        Query query = new Query(Criteria.where("id").is(Integer.parseInt(movieId)));
+//        Query query = new Query(Criteria.where("id").is(movieId));
+        return mongoTemplate.findOne(query, DBObject.class, Movie.COLLECTION);
+    }
+
+    @Override
+    public DBObject getDetailWithObjectId(String objectId) {
+        Query query = new Query(Criteria.where("_id").is(objectId));
         return mongoTemplate.findOne(query, DBObject.class, Movie.COLLECTION);
     }
 
@@ -76,4 +84,5 @@ public class MovieRepositoryImpl implements MovieRepository {
         query.skip((request.getPage() - 1L) * 20L).limit(20);
         return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
     }
+
 }

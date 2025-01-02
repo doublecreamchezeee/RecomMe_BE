@@ -13,5 +13,9 @@ public interface MovieRepository {
 
     DBObject getDetail(String movieId);
 
+    DBObject getDetailWithObjectId(String objectId);
+
     List<DBObject> search(MovieSearchRequest request);
+
+//    List<DBObject> getMovies(List<String> movieIds);
 }

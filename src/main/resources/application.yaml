@@ -26,3 +26,11 @@ com:
     firebase:
       web-api-key: ${FIREBASE_WEB_API_KEY}
       private-key: private-key.json
+    gemini:
+      api:
+        key: ${GEMINI_API_KEY}
+    retriever-api:
+      base:
+        url: ${RETRIEVER_URL}
+
+

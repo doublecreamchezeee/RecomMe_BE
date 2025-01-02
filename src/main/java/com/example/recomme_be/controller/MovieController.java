@@ -55,13 +55,18 @@ import java.util.List;
         @PublicEndpoint
         @GetMapping("/search")
         public ApiResponse<TmdbMovieListResponse> searchMovies(
-                @ModelAttribute MovieSearchRequest movieSearchRequest) {
+                @ModelAttribute MovieSearchRequest movieSearchRequest, @RequestParam Boolean isAdvancedSearch) {
 
             if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
                 throw new IllegalArgumentException("Please provide a search query.");
             }
-
-            var response = movieService.searchMovies(movieSearchRequest);
+            TmdbMovieListResponse response = null;
+            if (isAdvancedSearch) {
+                response = movieService.searchMoviesWithLLM(movieSearchRequest);
+            }
+            else {
+                response = movieService.searchMovies(movieSearchRequest);
+            }
             return ApiResponse.<TmdbMovieListResponse>builder()
                     .code(200)
                     .message("Fetched movies with keyword successfully")
@@ -69,19 +74,19 @@ import java.util.List;
                     .build();
         }
 
-        @PublicEndpoint
-        public ApiResponse<TmdbMovieListResponse> searchMoviesWithLLM(
-                @ModelAttribute MovieSearchRequest movieSearchRequest){
-            if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
-                throw new IllegalArgumentException("Please provide a search query.");
-            }
-            var response = movieService.searchMoviesWithLLM(movieSearchRequest);
-            return ApiResponse.<TmdbMovieListResponse>builder()
-                    .code(200)
-                    .message("Fetched movies with llm successfully")
-                    .result(response)
-                    .build();
-        }
+//        @PublicEndpoint
+//        public ApiResponse<TmdbMovieListResponse> searchMoviesWithLLM(
+//                @ModelAttribute MovieSearchRequest movieSearchRequest){
+//            if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
+//                throw new IllegalArgumentException("Please provide a search query.");
+//            }
+//            var response = movieService.searchMoviesWithLLM(movieSearchRequest);
+//            return ApiResponse.<TmdbMovieListResponse>builder()
+//                    .code(200)
+//                    .message("Fetched movies with llm successfully")
+//                    .result(response)
+//                    .build();
+//        }
 
         @PublicEndpoint
         @GetMapping("/{movieId}")
