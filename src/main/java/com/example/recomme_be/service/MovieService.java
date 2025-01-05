@@ -133,12 +133,11 @@ public class MovieService {
     }
 
     // Add a review for a movie
-    public Review addReview(String movieId, String userId, String content, double rating) {
+    public Review addReview(String movieId, String userId, String content) {
         Review review = new Review();
         review.setMovieId(movieId);
         review.setUserId(userId);
         review.setContent(content);
-        review.setRating(rating);
         return reviewRepository.save(review);
     }
 

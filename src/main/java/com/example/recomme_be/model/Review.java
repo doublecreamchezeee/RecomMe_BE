@@ -17,6 +17,4 @@ public class Review {
     String movieId;  // Reference to the movie
     String userId;   // User ID who wrote the review
     String content;  // Review content
-    double rating;   // Rating for the review
-
 }

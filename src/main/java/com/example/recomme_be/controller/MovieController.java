@@ -77,19 +77,19 @@ public class MovieController {
                 .build();
     }
 
-//        @PublicEndpoint
-//        public ApiResponse<TmdbMovieListResponse> searchMoviesWithLLM(
-//                @ModelAttribute MovieSearchRequest movieSearchRequest){
-//            if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
-//                throw new IllegalArgumentException("Please provide a search query.");
-//            }
-//            var response = movieService.searchMoviesWithLLM(movieSearchRequest);
-//            return ApiResponse.<TmdbMovieListResponse>builder()
-//                    .code(200)
-//                    .message("Fetched movies with llm successfully")
-//                    .result(response)
-//                    .build();
+//    @PublicEndpoint
+//    public ApiResponse<TmdbMovieListResponse> searchMoviesWithLLM(
+//            @ModelAttribute MovieSearchRequest movieSearchRequest){
+//        if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
+//            throw new IllegalArgumentException("Please provide a search query.");
 //        }
+//        var response = movieService.searchMoviesWithLLM(movieSearchRequest);
+//        return ApiResponse.<TmdbMovieListResponse>builder()
+//                .code(200)
+//                .message("Fetched movies with llm successfully")
+//                .result(response)
+//                .build();
+//    }
 
     @PublicEndpoint
     @GetMapping("/{movieId}")
@@ -159,11 +159,11 @@ public class MovieController {
                     .build();
         }
 
-    // Add review for a movie
     @PostMapping("/{movieId}/reviews")
-    public ApiResponse<Review> addReview(@PathVariable String movieId, @RequestParam String userId,
-                                         @RequestParam String content, @RequestParam double rating) {
-        Review review = movieService.addReview(movieId, userId, content, rating);
+    public ApiResponse<Review> addReview(Authentication authentication, @PathVariable String movieId,
+                                         @RequestParam String content) {
+        String userId = (String) authentication.getPrincipal();
+        Review review = movieService.addReview(movieId, userId, content);
         return ApiResponse.<Review>builder()
                 .code(200)
                 .message("Review added successfully")
