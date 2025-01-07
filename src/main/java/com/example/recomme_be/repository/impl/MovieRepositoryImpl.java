@@ -13,9 +13,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -51,8 +50,8 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public DBObject getDetail(String movieId) {
-        Query query = new Query(Criteria.where("id").is(Integer.parseInt(movieId)));
+    public DBObject getDetail(Integer movieId) {
+        Query query = new Query(Criteria.where("id").is(movieId));
 //        Query query = new Query(Criteria.where("id").is(movieId));
         return mongoTemplate.findOne(query, DBObject.class, Movie.COLLECTION);
     }
@@ -116,6 +115,12 @@ public class MovieRepositoryImpl implements MovieRepository {
 
         // Perform the update
         mongoTemplate.updateFirst(query, update, Movie.COLLECTION);
+    }
+
+    @Override
+    public List<DBObject> getByIds(Collection<Integer> ids) {
+        Query query = new Query(Criteria.where("id").in(ids));
+        return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
     }
 
 }

@@ -1,15 +1,10 @@
 package com.example.recomme_be.service;
 
-import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
-import com.example.recomme_be.dto.request.movie.MovieRatingUpdateRequest;
-import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
+import com.example.recomme_be.dto.request.movie.*;
 import com.example.recomme_be.dto.response.RetrieverResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.model.*;
-import com.example.recomme_be.repository.MovieRepository;
-import com.example.recomme_be.repository.RatingRepository;
-import com.example.recomme_be.repository.ReviewRepository;
-import com.example.recomme_be.repository.SearchHistoryRepository;
+import com.example.recomme_be.repository.*;
 import com.mongodb.DBObject;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,6 +27,8 @@ public class MovieService {
     private final SearchHistoryRepository searchHistoryRepository;
     private final ReviewRepository reviewRepository;
     private final RatingRepository ratingRepository;
+    private final FavoriteMovieRepository favoriteMovieRepository;
+    private final WatchListRepository watchListRepository;
 
     public TmdbMovieListResponse getPopularMovies(MoviePopularRequest request) {
         var movies = movieRepository.getPopular(request);
@@ -46,7 +45,7 @@ public class MovieService {
                 .build();
     }
 
-    public DBObject getDetailMovie(String movieId) {
+    public DBObject getDetailMovie(Integer movieId) {
         return movieRepository.getDetail(movieId);
     }
 
@@ -145,4 +144,48 @@ public class MovieService {
     public List<Review> getReviews(String movieId) {
         return reviewRepository.findByMovieId(movieId);
     }
+
+
+    public List<DBObject> getFavorites(String userId) {
+        List<FavoriteMovie> favoriteMovies = favoriteMovieRepository.findAllByUserId(userId);
+        List<Integer> movieIds = favoriteMovies.stream().map(FavoriteMovie::getMovieId).toList();
+        return movieRepository.getByIds(movieIds);
+    }
+    public List<FavoriteMovie> addToFavorites(AddToFavoritesRequest request) {
+        List<FavoriteMovie> favoriteMovies = new ArrayList<>();
+        for (Integer movieId : request.getMovieIds()) {
+            FavoriteMovie favoriteMovie = FavoriteMovie.builder()
+                    .movieId(movieId) // Assuming movieId is an integer
+                    .userId(request.getUserId())
+                    .createdAt(new Date())
+                    .build();
+            favoriteMovies.add(favoriteMovie);
+        }
+        return favoriteMovieRepository.saveAll(favoriteMovies);
+    }
+    public void removeFromFavorites(RemoveFromFavoritesRequest request) {
+        favoriteMovieRepository.deleteByUserIdAndMovieIdIn(request.getUserId(), request.getMovieIds());
+    }
+
+    public List<DBObject> getWatchList(String userId) {
+        List<WatchList> favoriteMovies = watchListRepository.findAllByUserId(userId);
+        List<Integer> movieIds = favoriteMovies.stream().map(WatchList::getMovieId).toList();
+        return movieRepository.getByIds(movieIds);
+    }
+    public List<WatchList> addToWatchList(AddToWatchListRequest request) {
+        List<WatchList> watchList = new ArrayList<>();
+        for (Integer movieId : request.getMovieIds()) {
+            WatchList watch = WatchList.builder()
+                    .movieId(movieId) // Assuming movieId is an integer
+                    .userId(request.getUserId())
+                    .createdAt(new Date())
+                    .build();
+            watchList.add(watch);
+        }
+        return watchListRepository.saveAll(watchList);
+    }
+    public void deleteFromWatchList(RemoveFromWatchListRequest request) {
+        watchListRepository.deleteByUserIdAndMovieIdIn(request.getUserId(), request.getMovieIds());
+    }
+
 }

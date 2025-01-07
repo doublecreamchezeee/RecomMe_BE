@@ -2,15 +2,12 @@ package com.example.recomme_be.controller;
 
 import com.example.recomme_be.configuration.core.PublicEndpoint;
 import com.example.recomme_be.dto.ApiResponse;
-import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
-import com.example.recomme_be.dto.request.movie.MovieRatingUpdateRequest;
-import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
+import com.example.recomme_be.dto.request.movie.*;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
-import com.example.recomme_be.model.Rating;
-import com.example.recomme_be.model.Review;
-import com.example.recomme_be.model.SearchHistory;
+import com.example.recomme_be.model.*;
 import com.example.recomme_be.service.MovieService;
 import com.mongodb.DBObject;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -94,9 +91,9 @@ public class MovieController {
     @PublicEndpoint
     @GetMapping("/{movieId}")
     public ApiResponse<DBObject> getDetailMovie(
-            @PathVariable(name = "movieId") @NotBlank(message = "Movie ID must not be empty") String movieId) {
+            @PathVariable(name = "movieId") @NotBlank(message = "Movie ID must not be empty") String movieId) throws  NumberFormatException {
 
-        var response = movieService.getDetailMovie(movieId);
+        var response = movieService.getDetailMovie(Integer.parseInt(movieId));
         return ApiResponse.<DBObject>builder()
                 .code(200)
                 .message("Fetched movie details successfully")
@@ -157,7 +154,67 @@ public class MovieController {
                     .result(response)
                     .message("Fetch rating list successfully.")
                     .build();
-        }
+    }
+
+    @GetMapping("/favorites")
+    public ApiResponse<List<DBObject>> getFavorites(Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
+        return ApiResponse.<List<DBObject>>builder()
+                .code(HttpStatus.OK.value())
+                .result(movieService.getFavorites(userId))
+                .message("Get favorites successfully.")
+                .build();
+    }
+    @PostMapping("/favorites")
+    public ApiResponse<List<FavoriteMovie>> addToFavorites(Authentication authentication, @RequestBody @Valid AddToFavoritesRequest request) {
+        String userId = (String) authentication.getPrincipal();
+        request.setUserId(userId);
+        return ApiResponse.<List<FavoriteMovie>>builder()
+                .code(HttpStatus.OK.value())
+                .result(movieService.addToFavorites(request))
+                .message("Add to favorites successfully.")
+                .build();
+    }
+    @DeleteMapping("/favorites")
+    public ApiResponse<Void> removeFromFavorites(Authentication authentication, @RequestBody @Valid RemoveFromFavoritesRequest request) {
+        String userId = (String) authentication.getPrincipal();
+        request.setUserId(userId);
+        movieService.removeFromFavorites(request);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Remove from favorites successfully.")
+                .build();
+    }
+
+    @GetMapping("/watchList")
+    public ApiResponse<List<DBObject>> getWatchList(Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
+        return ApiResponse.<List<DBObject>>builder()
+                .code(HttpStatus.OK.value())
+                .result(movieService.getWatchList(userId))
+                .message("Get favorites successfully.")
+                .build();
+    }
+    @PostMapping("/watchList")
+    public ApiResponse<List<WatchList>> addToWatchList(Authentication authentication, @RequestBody @Valid AddToWatchListRequest request) {
+        String userId = (String) authentication.getPrincipal();
+        request.setUserId(userId);
+        return ApiResponse.<List<WatchList>>builder()
+                .code(HttpStatus.OK.value())
+                .result(movieService.addToWatchList(request))
+                .message("Add to watch list successfully.")
+                .build();
+    }
+    @DeleteMapping("/watchList")
+    public ApiResponse<Void> removeFromWatchList(Authentication authentication, @RequestBody @Valid RemoveFromWatchListRequest request) {
+        String userId = (String) authentication.getPrincipal();
+        request.setUserId(userId);
+        movieService.deleteFromWatchList(request);
+        return ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message("Remove from watch list successfully.")
+                .build();
+    }
 
     @PostMapping("/{movieId}/reviews")
     public ApiResponse<Review> addReview(Authentication authentication, @PathVariable String movieId,
