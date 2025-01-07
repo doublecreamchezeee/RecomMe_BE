@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/movies")
@@ -218,8 +219,9 @@ public class MovieController {
 
     @PostMapping("/{movieId}/reviews")
     public ApiResponse<Review> addReview(Authentication authentication, @PathVariable String movieId,
-                                         @RequestParam String content) {
+                                         @RequestBody Map<String,String> body) {
         String userId = (String) authentication.getPrincipal();
+        String content = body.get("content");
         Review review = movieService.addReview(movieId, userId, content);
         return ApiResponse.<Review>builder()
                 .code(200)
