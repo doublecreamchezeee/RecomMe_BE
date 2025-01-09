@@ -146,9 +146,8 @@ public class MovieController {
 
     }
 
-    @GetMapping("/rate")
-    public ApiResponse<List<Rating>> rateMovie(Authentication authentication) {
-            String userId = (String) authentication.getPrincipal();
+    @GetMapping("/rate/{userId}")
+    public ApiResponse<List<Rating>> rateMovie(@PathVariable String userId) {
             List<Rating> response = movieService.getListRating(userId);
             return ApiResponse.<List<Rating>>builder()
                     .code(HttpStatus.OK.value())
@@ -187,9 +186,8 @@ public class MovieController {
                 .build();
     }
 
-    @GetMapping("/watchList")
-    public ApiResponse<List<DBObject>> getWatchList(Authentication authentication) {
-        String userId = (String) authentication.getPrincipal();
+    @GetMapping("/watchList/{userId}")
+    public ApiResponse<List<DBObject>> getWatchList(@PathVariable String userId) {
         return ApiResponse.<List<DBObject>>builder()
                 .code(HttpStatus.OK.value())
                 .result(movieService.getWatchList(userId))

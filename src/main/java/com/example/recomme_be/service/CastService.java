@@ -3,6 +3,7 @@ package com.example.recomme_be.service;
 import com.example.recomme_be.dto.response.movie.TmdbCastListResponse;
 import com.example.recomme_be.model.Cast;
 import com.example.recomme_be.repository.CastRepository;
+import com.mongodb.DBObject;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
