@@ -5,4 +5,4 @@ services:
     ports:
       - "8888:8888" # Map the container's port 8888 to the host's port 8888
     env_file:
-      - .env # Reference the .env file
+      - src/main/resources/.env # Reference the .env file
