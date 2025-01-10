@@ -21,6 +21,8 @@ public interface MovieRepository {
     void updateMovieRating(String movieId, double newRating);
 
     List<DBObject> getByIds(Collection<Integer> ids);
+    List<DBObject> getByObjectIds(Collection<String> objectIds);
+
 
 //    List<DBObject> getMovies(List<String> movieIds);
 }

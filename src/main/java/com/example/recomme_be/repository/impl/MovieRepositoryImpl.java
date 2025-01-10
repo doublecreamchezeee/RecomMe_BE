@@ -6,6 +6,7 @@ import com.example.recomme_be.model.Movie;
 import com.example.recomme_be.repository.MovieRepository;
 import com.mongodb.DBObject;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -120,6 +121,16 @@ public class MovieRepositoryImpl implements MovieRepository {
     @Override
     public List<DBObject> getByIds(Collection<Integer> ids) {
         Query query = new Query(Criteria.where("id").in(ids));
+        return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
+    }
+
+    @Override
+    public List<DBObject> getByObjectIds(Collection<String> objectIds) {
+        List<ObjectId> objectIdList = objectIds.stream()
+                .map(ObjectId::new)
+                .toList();
+
+        Query query = new Query(Criteria.where("_id").in(objectIdList));
         return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
     }
 
