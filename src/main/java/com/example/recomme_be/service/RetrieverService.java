@@ -1,8 +1,6 @@
 package com.example.recomme_be.service;
 
 import com.example.recomme_be.dto.response.RetrieverResponse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,7 +13,7 @@ public class RetrieverService {
     @Value("${com.example.gemini.api.key}")
     private String geminiApiKey;
 
-    @Value("${com.example.retriever-api.base.url}")
+    @Value("${com.example.llm-api.base.url}")
     private String apiBaseUrl;
 
     public RetrieverService(RestTemplate restTemplate) {
@@ -25,8 +23,8 @@ public class RetrieverService {
 
     public RetrieverResponse search(String collectionName, String query, Integer amount, Double threshold) {
         // Build URL with query parameters
-        String url = UriComponentsBuilder.fromHttpUrl(apiBaseUrl)
-                .queryParam("gemini_api_key", geminiApiKey)
+        String url = UriComponentsBuilder.fromUriString(apiBaseUrl + "/retriever/")
+                .queryParam("llm_api_key", geminiApiKey)
                 .queryParam("collection_name", collectionName)
                 .queryParam("query", query)
                 .queryParam("amount", amount != null ? amount : 25) // Default value for amount

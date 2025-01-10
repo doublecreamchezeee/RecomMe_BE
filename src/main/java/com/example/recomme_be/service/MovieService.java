@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,13 @@ public class MovieService {
     private final RatingRepository ratingRepository;
     private final FavoriteMovieRepository favoriteMovieRepository;
     private final WatchListRepository watchListRepository;
+
+    public TmdbMovieListResponse getMoviesByObjectIds(Collection<String> objectIds) {
+        var movies =  movieRepository.getByObjectIds(objectIds);
+        return TmdbMovieListResponse.builder()
+                .results(movies)
+                .build();
+    }
 
     public TmdbMovieListResponse getPopularMovies(MoviePopularRequest request) {
         var movies = movieRepository.getPopular(request);

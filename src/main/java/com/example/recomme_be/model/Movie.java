@@ -18,12 +18,6 @@ class Collection {
     String backdrop_path;
 }
 
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
-class Genre {
-    int id;
-    String name;
-}
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

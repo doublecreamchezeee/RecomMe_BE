@@ -29,8 +29,8 @@ com:
     gemini:
       api:
         key: ${GEMINI_API_KEY}
-    retriever-api:
+    llm-api:
       base:
-        url: ${RETRIEVER_URL}
+        url: ${LLM_URL}
 
 
