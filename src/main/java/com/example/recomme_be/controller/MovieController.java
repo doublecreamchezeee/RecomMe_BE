@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/movies")
@@ -145,9 +146,8 @@ public class MovieController {
 
     }
 
-    @GetMapping("/rate")
-    public ApiResponse<List<Rating>> rateMovie(Authentication authentication) {
-            String userId = (String) authentication.getPrincipal();
+    @GetMapping("/rate/{userId}")
+    public ApiResponse<List<Rating>> rateMovie(@PathVariable String userId) {
             List<Rating> response = movieService.getListRating(userId);
             return ApiResponse.<List<Rating>>builder()
                     .code(HttpStatus.OK.value())
@@ -186,9 +186,8 @@ public class MovieController {
                 .build();
     }
 
-    @GetMapping("/watchList")
-    public ApiResponse<List<DBObject>> getWatchList(Authentication authentication) {
-        String userId = (String) authentication.getPrincipal();
+    @GetMapping("/watchList/{userId}")
+    public ApiResponse<List<DBObject>> getWatchList(@PathVariable String userId) {
         return ApiResponse.<List<DBObject>>builder()
                 .code(HttpStatus.OK.value())
                 .result(movieService.getWatchList(userId))
@@ -218,8 +217,9 @@ public class MovieController {
 
     @PostMapping("/{movieId}/reviews")
     public ApiResponse<Review> addReview(Authentication authentication, @PathVariable String movieId,
-                                         @RequestParam String content) {
+                                         @RequestBody Map<String,String> body) {
         String userId = (String) authentication.getPrincipal();
+        String content = body.get("content");
         Review review = movieService.addReview(movieId, userId, content);
         return ApiResponse.<Review>builder()
                 .code(200)
