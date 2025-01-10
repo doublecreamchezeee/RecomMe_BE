@@ -25,7 +25,7 @@ public class LLMController {
         if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
             throw new IllegalArgumentException("Please provide a search query.");
         }
-        var response = navigateService.search(movieSearchRequest.getQuery());
+        var response = navigateService.navigate(movieSearchRequest.getQuery());
         return ApiResponse.<LLMNavigateResponse>builder()
                 .code(200)
                 .message("Fetched popular movies successfully")
