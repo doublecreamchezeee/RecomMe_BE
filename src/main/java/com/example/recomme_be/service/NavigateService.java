@@ -1,33 +1,17 @@
 package com.example.recomme_be.service;
 
+import com.example.recomme_be.client.LLMClient;
 import com.example.recomme_be.dto.response.LLMNavigateResponse;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+
 @Service
+@RequiredArgsConstructor
 public class NavigateService {
-    private final RestTemplate restTemplate;
 
-    @Value("${com.example.gemini.api.key}")
-    private String geminiApiKey;
+    private final LLMClient llmClient;
 
-    @Value("${com.example.llm-api.base.url}")
-    private String apiBaseUrl;
-
-    public NavigateService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-
-    public LLMNavigateResponse search(String query) {
-        // Build URL with query parameters
-        String url = UriComponentsBuilder.fromUriString(apiBaseUrl + "/navigate/")
-                .queryParam("llm_api_key", geminiApiKey)
-                .queryParam("query", query)
-                .toUriString();
-
-        // Call the API and return the response
-        return restTemplate.postForObject(url, null, LLMNavigateResponse.class);
+    public LLMNavigateResponse navigate(String query) {
+        return llmClient.navigate(query);
     }
 }
