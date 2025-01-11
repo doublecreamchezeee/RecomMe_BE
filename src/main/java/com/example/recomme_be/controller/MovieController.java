@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,21 @@ import java.util.Map;
 public class MovieController {
 
     private final MovieService movieService;
+
+    @PublicEndpoint
+    @GetMapping("")
+    public ApiResponse<TmdbMovieListResponse> getMovies(
+            @RequestParam String objectIds) {
+        List<String> objectIdList = Arrays.stream(objectIds.split(","))
+                .map(String::trim)
+                .toList();
+        var response = movieService.getMoviesByObjectIds(objectIdList);
+        return ApiResponse.<TmdbMovieListResponse>builder()
+                .code(200)
+                .message("Fetched movies successfully")
+                .result(response)
+                .build();
+    }
 
     @PublicEndpoint
     @GetMapping("/popular")
@@ -103,7 +119,7 @@ public class MovieController {
     }
 
     // Save search history
-    @PostMapping
+    @PostMapping("/search")
     public ApiResponse<Void> saveSearch(
             @RequestParam String userId,
             @RequestParam String query) {
@@ -115,7 +131,7 @@ public class MovieController {
     }
 
     // Get search history
-    @GetMapping
+    @GetMapping("/searchHistory")
     public ApiResponse<List<SearchHistory>> getSearchHistory(@RequestParam String userId) {
         var history = movieService.getSearchHistory(userId);
         return ApiResponse.<List<SearchHistory>>builder()
