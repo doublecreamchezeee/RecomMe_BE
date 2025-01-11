@@ -90,7 +90,7 @@ public class MovieController {
 //    }
 
     @PublicEndpoint
-    @GetMapping("/{movieId}")
+    @GetMapping("/details/{movieId}")
     public ApiResponse<DBObject> getDetailMovie(
             @PathVariable(name = "movieId") @NotBlank(message = "Movie ID must not be empty") String movieId) throws  NumberFormatException {
 

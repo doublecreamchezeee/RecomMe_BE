@@ -115,6 +115,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
             }
+            else {
+                ResponseEntity<ApiResponse> errorResponse = globalExceptionController.handleTokenVerificationException(new TokenVerificationException());
+                writeErrorResponse(response, errorResponse);
+                return;
+            }
         }
 
         // Continue with the filter chain
