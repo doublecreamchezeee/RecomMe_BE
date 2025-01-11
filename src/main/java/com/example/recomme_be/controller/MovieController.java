@@ -119,10 +119,11 @@ public class MovieController {
     }
 
     // Save search history
-    @PostMapping("/search")
+    @PostMapping("/save-search")
     public ApiResponse<Void> saveSearch(
-            @RequestParam String userId,
+            Authentication authentication,
             @RequestParam String query) {
+        String userId = (String) authentication.getPrincipal();
         movieService.saveSearch(userId, query);
         return ApiResponse.<Void>builder()
                 .code(200)
@@ -132,7 +133,8 @@ public class MovieController {
 
     // Get search history
     @GetMapping("/searchHistory")
-    public ApiResponse<List<SearchHistory>> getSearchHistory(@RequestParam String userId) {
+    public ApiResponse<List<SearchHistory>> getSearchHistory(Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
         var history = movieService.getSearchHistory(userId);
         return ApiResponse.<List<SearchHistory>>builder()
                 .code(200)

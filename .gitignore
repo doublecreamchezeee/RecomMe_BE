@@ -37,3 +37,4 @@ out/
 .vscode/
 src/main/resources/private-key.json
 src/main/resources/.env
+.env
