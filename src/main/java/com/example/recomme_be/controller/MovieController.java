@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +27,11 @@ public class MovieController {
     @PublicEndpoint
     @GetMapping("")
     public ApiResponse<TmdbMovieListResponse> getMovies(
-            @RequestParam String objectIds) {
-        List<String> objectIdList = Arrays.stream(objectIds.split(","))
-                .map(String::trim)
-                .toList();
-        var response = movieService.getMoviesByObjectIds(objectIdList);
+            @ModelAttribute MoviesFilterRequest request) {
+//        List<String> objectIdList = Arrays.stream(objectIds.split(","))
+//                .map(String::trim)
+//                .toList();
+        var response = movieService.filter(request);
         return ApiResponse.<TmdbMovieListResponse>builder()
                 .code(200)
                 .message("Fetched movies successfully")
@@ -245,9 +244,9 @@ public class MovieController {
 
 
     @PublicEndpoint
-    @GetMapping("/latestTrailer")
-    public ApiResponse<TmdbMovieListResponse> getLatestTrailer(@ModelAttribute LatestTrailerRequest request) {
-        TmdbMovieListResponse tmdbMovieListResponse = movieService.getLatestTrailer(request);
+    @GetMapping("/latestTrailers")
+    public ApiResponse<TmdbMovieListResponse> getLatestTrailer(@ModelAttribute LatestTrailersRequest request) {
+        TmdbMovieListResponse tmdbMovieListResponse = movieService.getLatestTrailers(request);
         return ApiResponse.<TmdbMovieListResponse>builder()
                 .code(200)
                 .message("Fetched latest trailer successfully")

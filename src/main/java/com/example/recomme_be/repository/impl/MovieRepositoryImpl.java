@@ -2,6 +2,7 @@ package com.example.recomme_be.repository.impl;
 
 import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
+import com.example.recomme_be.dto.request.movie.MoviesFilterRequest;
 import com.example.recomme_be.model.Movie;
 import com.example.recomme_be.repository.MovieRepository;
 import com.mongodb.BasicDBObject;
@@ -13,8 +14,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -131,6 +134,60 @@ public class MovieRepositoryImpl implements MovieRepository {
                 .toList();
 
         Query query = new Query(Criteria.where("_id").in(objectIdList));
+        return mongoTemplate.find(query, BasicDBObject.class, Movie.COLLECTION);
+    }
+
+    @Override
+    public List<BasicDBObject> filter(MoviesFilterRequest request) {
+        Query query = new Query();
+
+        // Filter by genre IDs
+        if (StringUtils.hasText(request.getGenreIds())) {
+            List<String> genreIdsString = Arrays.asList(request.getGenreIds().split(","));
+
+            List<Integer> genreIds = genreIdsString.stream()
+                    .map(Integer::valueOf)  // or Long::valueOf if Mongo stores IDs as long
+                    .toList();
+
+            // Apply the filter
+            query.addCriteria(Criteria.where("genres")
+                    .elemMatch(Criteria.where("id").in(genreIds)));
+        }
+
+        // Filter by object IDs
+        if (StringUtils.hasText(request.getObjectIds())) {
+            List<String> objectIds = Arrays.asList(request.getObjectIds().split(","));
+            query.addCriteria(Criteria.where("_id").in(objectIds));
+        }
+
+        // Filter by release date range
+        if (request.getFromDate() != null || request.getToDate() != null) {
+            Criteria dateCriteria = new Criteria("release_date");
+            if (request.getFromDate() != null) {
+                dateCriteria = dateCriteria.gte(request.getFromDate());
+            }
+            if (request.getToDate() != null) {
+                dateCriteria = dateCriteria.lte(request.getToDate());
+            }
+            query.addCriteria(dateCriteria);
+        }
+
+        // Filter by score range
+        if (request.getFromScore() != null || request.getToScore() != null) {
+            Criteria scoreCriteria = new Criteria("vote_average");
+            if (request.getFromScore() != null) {
+                scoreCriteria = scoreCriteria.gte( request.getFromScore());
+            }
+            if (request.getToScore() != null) {
+                scoreCriteria = scoreCriteria.lte(request.getToScore());
+            }
+            query.addCriteria(scoreCriteria);
+        }
+
+        // Pagination
+        int skip = (request.getPage() - 1) * request.getPageSize();
+        query.skip(skip).limit(request.getPageSize());
+
         return mongoTemplate.find(query, BasicDBObject.class, Movie.COLLECTION);
     }
 
