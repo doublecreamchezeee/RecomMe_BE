@@ -6,7 +6,7 @@ import com.example.recomme_be.dto.request.movie.*;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.model.*;
 import com.example.recomme_be.service.MovieService;
-import com.mongodb.DBObject;
+import com.mongodb.BasicDBObject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -91,27 +91,13 @@ public class MovieController {
                 .build();
     }
 
-//    @PublicEndpoint
-//    public ApiResponse<TmdbMovieListResponse> searchMoviesWithLLM(
-//            @ModelAttribute MovieSearchRequest movieSearchRequest){
-//        if (movieSearchRequest.getQuery() == null || movieSearchRequest.getQuery().isBlank()) {
-//            throw new IllegalArgumentException("Please provide a search query.");
-//        }
-//        var response = movieService.searchMoviesWithLLM(movieSearchRequest);
-//        return ApiResponse.<TmdbMovieListResponse>builder()
-//                .code(200)
-//                .message("Fetched movies with llm successfully")
-//                .result(response)
-//                .build();
-//    }
-
     @PublicEndpoint
     @GetMapping("/details/{movieId}")
-    public ApiResponse<DBObject> getDetailMovie(
+    public ApiResponse<BasicDBObject> getDetailMovie(
             @PathVariable(name = "movieId") @NotBlank(message = "Movie ID must not be empty") String movieId) throws  NumberFormatException {
 
         var response = movieService.getDetailMovie(Integer.parseInt(movieId));
-        return ApiResponse.<DBObject>builder()
+        return ApiResponse.<BasicDBObject>builder()
                 .code(200)
                 .message("Fetched movie details successfully")
                 .result(response)
@@ -175,9 +161,9 @@ public class MovieController {
     }
 
     @GetMapping("/favorites")
-    public ApiResponse<List<DBObject>> getFavorites(Authentication authentication) {
+    public ApiResponse<List<BasicDBObject>> getFavorites(Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
-        return ApiResponse.<List<DBObject>>builder()
+        return ApiResponse.<List<BasicDBObject>>builder()
                 .code(HttpStatus.OK.value())
                 .result(movieService.getFavorites(userId))
                 .message("Get favorites successfully.")
@@ -205,8 +191,8 @@ public class MovieController {
     }
 
     @GetMapping("/watchList/{userId}")
-    public ApiResponse<List<DBObject>> getWatchList(@PathVariable String userId) {
-        return ApiResponse.<List<DBObject>>builder()
+    public ApiResponse<List<BasicDBObject>> getWatchList(@PathVariable String userId) {
+        return ApiResponse.<List<BasicDBObject>>builder()
                 .code(HttpStatus.OK.value())
                 .result(movieService.getWatchList(userId))
                 .message("Get favorites successfully.")
@@ -254,6 +240,18 @@ public class MovieController {
                 .code(200)
                 .message("Fetched reviews successfully")
                 .result(reviews)
+                .build();
+    }
+
+
+    @PublicEndpoint
+    @GetMapping("/latestTrailer")
+    public ApiResponse<TmdbMovieListResponse> getLatestTrailer(@ModelAttribute LatestTrailerRequest request) {
+        TmdbMovieListResponse tmdbMovieListResponse = movieService.getLatestTrailer(request);
+        return ApiResponse.<TmdbMovieListResponse>builder()
+                .code(200)
+                .message("Fetched latest trailer successfully")
+                .result(tmdbMovieListResponse)
                 .build();
     }
 

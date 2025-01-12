@@ -4,7 +4,7 @@ import com.example.recomme_be.dto.request.movie.MoviePopularRequest;
 import com.example.recomme_be.dto.request.movie.MovieSearchRequest;
 import com.example.recomme_be.model.Movie;
 import com.example.recomme_be.repository.MovieRepository;
-import com.mongodb.DBObject;
+import com.mongodb.BasicDBObject;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
@@ -25,7 +25,7 @@ public class MovieRepositoryImpl implements MovieRepository {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public List<DBObject> getPopular(MoviePopularRequest request) {
+    public List<BasicDBObject> getPopular(MoviePopularRequest request) {
         Query query = new Query();
         if (request.getRegion() != null && !request.getRegion().isBlank()) {
             query.addCriteria(Criteria.where("origin_country").elemMatch(
@@ -33,11 +33,11 @@ public class MovieRepositoryImpl implements MovieRepository {
             ));
         }
         query.skip((request.getPage() - 1L) * 20L).limit(20);
-        return mongoTemplate.find(query, DBObject.class, Movie.POPULAR_COLLECTION);
+        return mongoTemplate.find(query, BasicDBObject.class, Movie.POPULAR_COLLECTION);
     }
 
     @Override
-    public List<DBObject> getTrending(String timeWindow) {
+    public List<BasicDBObject> getTrending(String timeWindow) {
         String collectionName = timeWindow.equalsIgnoreCase("day") ?
                 Movie.TRENDING_DAY_COLLECTION : Movie.TRENDING_WEEK_COLLECTION;
 
@@ -47,24 +47,24 @@ public class MovieRepositoryImpl implements MovieRepository {
                 // Giới hạn số lượng kết quả trả về (ví dụ, 10 phim)
                 .limit(10);
 
-        return mongoTemplate.find(query, DBObject.class, collectionName);
+        return mongoTemplate.find(query, BasicDBObject.class, collectionName);
     }
 
     @Override
-    public DBObject getDetail(Integer movieId) {
+    public BasicDBObject getDetail(Integer movieId) {
         Query query = new Query(Criteria.where("id").is(movieId));
 //        Query query = new Query(Criteria.where("id").is(movieId));
-        return mongoTemplate.findOne(query, DBObject.class, Movie.COLLECTION);
+        return mongoTemplate.findOne(query, BasicDBObject.class, Movie.COLLECTION);
     }
 
     @Override
-    public DBObject getDetailWithObjectId(String objectId) {
+    public BasicDBObject getDetailWithObjectId(String objectId) {
         Query query = new Query(Criteria.where("_id").is(objectId));
-        return mongoTemplate.findOne(query, DBObject.class, Movie.COLLECTION);
+        return mongoTemplate.findOne(query, BasicDBObject.class, Movie.COLLECTION);
     }
 
     @Override
-    public List<DBObject> search(MovieSearchRequest request) {
+    public List<BasicDBObject> search(MovieSearchRequest request) {
         Query query = new Query();
         if (request.getQuery() != null && !request.getQuery().isBlank()) {
             query.addCriteria(new Criteria().orOperator(
@@ -85,7 +85,7 @@ public class MovieRepositoryImpl implements MovieRepository {
             query.addCriteria(Criteria.where("release_date").regex("^" + request.getPrimaryReleaseYear()));
         }
         query.skip((request.getPage() - 1L) * 20L).limit(20);
-        return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
+        return mongoTemplate.find(query, BasicDBObject.class, Movie.COLLECTION);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class MovieRepositoryImpl implements MovieRepository {
         Query query = new Query(Criteria.where("id").is(Integer.parseInt(movieId)));
 
         // Retrieve the current movie details
-        DBObject movie = mongoTemplate.findOne(query, DBObject.class, Movie.COLLECTION);
+        BasicDBObject movie = mongoTemplate.findOne(query, BasicDBObject.class, Movie.COLLECTION);
         if (movie == null) {
             throw new IllegalArgumentException("Movie not found with ID: " + movieId);
         }
@@ -119,19 +119,19 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     @Override
-    public List<DBObject> getByIds(Collection<Integer> ids) {
+    public List<BasicDBObject> getByIds(Collection<Integer> ids) {
         Query query = new Query(Criteria.where("id").in(ids));
-        return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
+        return mongoTemplate.find(query, BasicDBObject.class, Movie.COLLECTION);
     }
 
     @Override
-    public List<DBObject> getByObjectIds(Collection<String> objectIds) {
+    public List<BasicDBObject> getByObjectIds(Collection<String> objectIds) {
         List<ObjectId> objectIdList = objectIds.stream()
                 .map(ObjectId::new)
                 .toList();
 
         Query query = new Query(Criteria.where("_id").in(objectIdList));
-        return mongoTemplate.find(query, DBObject.class, Movie.COLLECTION);
+        return mongoTemplate.find(query, BasicDBObject.class, Movie.COLLECTION);
     }
 
 }
