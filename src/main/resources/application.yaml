@@ -33,4 +33,9 @@ com:
       base:
         url: ${LLM_URL}
 
+tmdb:
+  api-key: ${TMDB_API_KEY}
+  read-access-token: ${TMDB_READ_ACCESS_TOKEN}
+  base-url: ${TMDB_BASE_URL}
+
 

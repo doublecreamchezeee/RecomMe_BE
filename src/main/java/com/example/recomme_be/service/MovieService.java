@@ -1,11 +1,12 @@
 package com.example.recomme_be.service;
 
+import com.example.recomme_be.client.TMDBClient;
 import com.example.recomme_be.dto.request.movie.*;
 import com.example.recomme_be.dto.response.RetrieverResponse;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import com.example.recomme_be.model.*;
 import com.example.recomme_be.repository.*;
-import com.mongodb.DBObject;
+import com.mongodb.BasicDBObject;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class MovieService {
     private final RatingRepository ratingRepository;
     private final FavoriteMovieRepository favoriteMovieRepository;
     private final WatchListRepository watchListRepository;
+    private final TMDBClient tmdbClient;
 
     public TmdbMovieListResponse getMoviesByObjectIds(Collection<String> objectIds) {
         var movies =  movieRepository.getByObjectIds(objectIds);
@@ -53,7 +55,7 @@ public class MovieService {
                 .build();
     }
 
-    public DBObject getDetailMovie(Integer movieId) {
+    public BasicDBObject getDetailMovie(Integer movieId) {
         return movieRepository.getDetail(movieId);
     }
 
@@ -80,7 +82,7 @@ public class MovieService {
         }
 
         // Step 3: Iterate over IDs and retrieve movie details
-        List<DBObject> movies = movieIds.stream()
+        List<BasicDBObject> movies = movieIds.stream()
                 .map(movieId -> {
                     try {
                         // Use existing repository method to get details
@@ -154,7 +156,7 @@ public class MovieService {
     }
 
 
-    public List<DBObject> getFavorites(String userId) {
+    public List<BasicDBObject> getFavorites(String userId) {
         List<FavoriteMovie> favoriteMovies = favoriteMovieRepository.findAllByUserId(userId);
         List<Integer> movieIds = favoriteMovies.stream().map(FavoriteMovie::getMovieId).toList();
         return movieRepository.getByIds(movieIds);
@@ -175,7 +177,7 @@ public class MovieService {
         favoriteMovieRepository.deleteByUserIdAndMovieIdIn(request.getUserId(), request.getMovieIds());
     }
 
-    public List<DBObject> getWatchList(String userId) {
+    public List<BasicDBObject> getWatchList(String userId) {
         List<WatchList> favoriteMovies = watchListRepository.findAllByUserId(userId);
         List<Integer> movieIds = favoriteMovies.stream().map(WatchList::getMovieId).toList();
         return movieRepository.getByIds(movieIds);
@@ -194,6 +196,11 @@ public class MovieService {
     }
     public void deleteFromWatchList(RemoveFromWatchListRequest request) {
         watchListRepository.deleteByUserIdAndMovieIdIn(request.getUserId(), request.getMovieIds());
+    }
+
+
+    public TmdbMovieListResponse getLatestTrailer(LatestTrailerRequest request) {
+        return tmdbClient.getLatestTrailer(request);
     }
 
 }
