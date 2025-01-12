@@ -78,7 +78,7 @@ public class MovieService {
     public TmdbMovieListResponse searchMoviesWithLLM(MovieSearchRequest request) {
         // Step 1: Call RetrieverService to get a list of movie IDs
         RetrieverResponse retrieverResponse = retrieverService.search(
-                "movies", request.getQuery(), 10, 0.5);
+                "movies", request.getQuery(), 20, 0.5);
 
         // Step 2: Extract movie IDs from the retriever response
         List<String> movieIds = retrieverResponse.getData().getResult();
@@ -150,11 +150,13 @@ public class MovieService {
     }
 
     // Add a review for a movie
-    public Review addReview(String movieId, String userId, String content) {
+    public Review addReview(String movieId, String userId, String content, String author) {
         Review review = new Review();
         review.setMovieId(movieId);
         review.setUserId(userId);
         review.setContent(content);
+        review.setAuthor(author);
+        review.setTime(LocalDateTime.now());
         return reviewRepository.save(review);
     }
 
