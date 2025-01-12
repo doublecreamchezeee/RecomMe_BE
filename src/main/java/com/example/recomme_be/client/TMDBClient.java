@@ -1,7 +1,6 @@
 package com.example.recomme_be.client;
 
-import com.example.recomme_be.dto.request.movie.LatestTrailerRequest;
-import com.example.recomme_be.dto.response.movie.DetailTmdbMovieResponse;
+import com.example.recomme_be.dto.request.movie.LatestTrailersRequest;
 import com.example.recomme_be.dto.response.movie.TmdbMovieListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
 
 
 @Component
@@ -44,13 +39,13 @@ public class TMDBClient {
     }
 
 
-    public TmdbMovieListResponse getLatestTrailer(LatestTrailerRequest request) {
+    public TmdbMovieListResponse getLatestTrailers(LatestTrailersRequest request) {
         String url = String.format("%s/movie/upcoming", baseUrl);
         try {
 
 
             // Create an HttpEntity with the headers and request body
-            HttpEntity<LatestTrailerRequest> entity = new HttpEntity<>(request, createAuthorizationHeaders());
+            HttpEntity<LatestTrailersRequest> entity = new HttpEntity<>(request, createAuthorizationHeaders());
 
             // Send the POST request
             TmdbMovieListResponse response = restTemplate.exchange(url, HttpMethod.GET, entity, TmdbMovieListResponse.class).getBody();

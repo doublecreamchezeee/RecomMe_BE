@@ -40,6 +40,14 @@ public class MovieService {
                 .build();
     }
 
+    public TmdbMovieListResponse filter(MoviesFilterRequest request) {
+        var movies =  movieRepository.filter(request);
+        return TmdbMovieListResponse.builder()
+                .page(request.getPage())
+                .results(movies)
+                .build();
+    }
+
     public TmdbMovieListResponse getPopularMovies(MoviePopularRequest request) {
         var movies = movieRepository.getPopular(request);
         return TmdbMovieListResponse.builder()
@@ -201,8 +209,8 @@ public class MovieService {
     }
 
 
-    public TmdbMovieListResponse getLatestTrailer(LatestTrailerRequest request) {
-        return tmdbClient.getLatestTrailer(request);
+    public TmdbMovieListResponse getLatestTrailers(LatestTrailersRequest request) {
+        return tmdbClient.getLatestTrailers(request);
     }
 
 }

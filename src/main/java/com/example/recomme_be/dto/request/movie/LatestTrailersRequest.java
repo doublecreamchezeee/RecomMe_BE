@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LatestTrailerRequest {
+public class LatestTrailersRequest {
     private String language = "en-US"; // Defaults to en-US
     private String region;
     private Integer page = 1; // Defaults to 1
