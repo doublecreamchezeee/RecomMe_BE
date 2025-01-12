@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "cast")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Cast {
+    public static final String COLLECTION = "cast";
+
     @Id
     ObjectId _id;
     boolean adult;

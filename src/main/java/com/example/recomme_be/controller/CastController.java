@@ -2,6 +2,7 @@ package com.example.recomme_be.controller;
 
 import com.example.recomme_be.configuration.core.PublicEndpoint;
 import com.example.recomme_be.dto.ApiResponse;
+import com.example.recomme_be.dto.request.movie.CastsSearchRequest;
 import com.example.recomme_be.dto.response.movie.TmdbCastListResponse;
 import com.example.recomme_be.model.Cast;
 import com.example.recomme_be.service.CastService;
@@ -53,4 +54,25 @@ public class CastController {
                 .build();
     }
 
+    @PublicEndpoint
+    @GetMapping("/search")
+    public ApiResponse<TmdbCastListResponse> searchMovies(
+            @ModelAttribute CastsSearchRequest request, @RequestParam(defaultValue = "false") Boolean isAdvancedSearch) {
+
+        if (request.getSearchTerm() == null || request.getSearchTerm().isBlank()) {
+            throw new IllegalArgumentException("Please provide a search query.");
+        }
+        TmdbCastListResponse response = null;
+        if (isAdvancedSearch) {
+            response = castService.searchWithLLM(request);
+        }
+        else {
+            response = castService.search(request);
+        }
+        return ApiResponse.<TmdbCastListResponse>builder()
+                .code(200)
+                .message("Fetched movies with keyword successfully")
+                .result(response)
+                .build();
+    }
 }
