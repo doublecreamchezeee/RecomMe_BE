@@ -5,6 +5,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -17,4 +20,6 @@ public class Review {
     String movieId;  // Reference to the movie
     String userId;   // User ID who wrote the review
     String content;  // Review content
+    String author;
+    LocalDateTime time;
 }

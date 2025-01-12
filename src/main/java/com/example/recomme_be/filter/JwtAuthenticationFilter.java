@@ -26,6 +26,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -63,8 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     final var userId = Optional.ofNullable(firebaseToken.getClaims().get(USER_ID_CLAIM))
                             .orElseThrow(() -> new IllegalStateException("User ID claim missing"));
 
-                    // Set the authentication in the SecurityContext
-                    final var authentication = new UsernamePasswordAuthenticationToken(userId, null, null);
+                    // Extract email from claims (or throw an exception if it's missing)
+                    final var email = Optional.ofNullable(firebaseToken.getClaims().get("email"))
+                            .map(Object::toString)
+                            .orElseThrow(() -> new IllegalStateException("Email claim missing"));
+
+                    // Set the authentication in the SecurityContext with email as credentials
+                    final var authentication = new UsernamePasswordAuthenticationToken(userId, email, null);
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } catch (FirebaseAuthException e){

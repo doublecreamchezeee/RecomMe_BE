@@ -20,7 +20,7 @@ public class CastController {
     @PublicEndpoint
     @GetMapping
     public ApiResponse<TmdbCastListResponse> getAllCast(@RequestParam int page) {
-        var response = castService.getAllCasts(page, 20);
+        var response = castService.getAllCasts(page, 24);
         return ApiResponse.<TmdbCastListResponse>builder()
                 .code(200)
                 .message("Fetched cast successfully")

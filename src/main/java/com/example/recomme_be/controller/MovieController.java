@@ -223,8 +223,9 @@ public class MovieController {
     public ApiResponse<Review> addReview(Authentication authentication, @PathVariable String movieId,
                                          @RequestBody Map<String,String> body) {
         String userId = (String) authentication.getPrincipal();
+        String author = (String) authentication.getCredentials();
         String content = body.get("content");
-        Review review = movieService.addReview(movieId, userId, content);
+        Review review = movieService.addReview(movieId, userId, content, author);
         return ApiResponse.<Review>builder()
                 .code(200)
                 .message("Review added successfully")
