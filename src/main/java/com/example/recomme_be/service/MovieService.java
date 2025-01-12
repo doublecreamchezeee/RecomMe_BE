@@ -119,7 +119,7 @@ public class MovieService {
     }
 
     public List<SearchHistory> getSearchHistory(String userId) {
-        return searchHistoryRepository.findByUserIdOrderByTimestampDesc(userId);
+        return searchHistoryRepository.findTop5ByUserIdOrderByTimestampDesc(userId);
     }
 
     // Rate a movie

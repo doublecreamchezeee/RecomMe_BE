@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface SearchHistoryRepository extends MongoRepository<SearchHistory, String> {
-    List<SearchHistory> findByUserIdOrderByTimestampDesc(String userId);
+    List<SearchHistory> findTop5ByUserIdOrderByTimestampDesc(String userId);
 }
