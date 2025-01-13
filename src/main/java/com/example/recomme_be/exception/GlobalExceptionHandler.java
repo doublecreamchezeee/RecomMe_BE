@@ -76,6 +76,16 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse> handleIllegalArgumentExceptions(IllegalArgumentException ex) {
+        log.error("An unexpected error occurred: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ApiResponse.builder()
+                        .code(ErrorCode.BAD_REQUEST.getCode())
+                        .message(ex.getMessage())
+                        .build()
+        );
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericExceptions(Exception ex) {
@@ -87,4 +97,6 @@ public class GlobalExceptionHandler {
                         .build()
                 );
     }
+
+
 }
