@@ -6,6 +6,7 @@ import com.example.recomme_be.dto.response.movie.TmdbCastListResponse;
 import com.example.recomme_be.model.Cast;
 import com.example.recomme_be.repository.CastRepository;
 import com.example.recomme_be.repository.CastRepositoryExtend;
+import com.mongodb.BasicDBObject;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ public class CastService {
     private final CastRepository castRepository;
     private final CastRepositoryExtend castRepositoryExtend;
     private final  RetrieverService retrieverService;
-
+    private final MovieService movieService;
     public TmdbCastListResponse getAllCasts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Cast> casts = castRepository.findAll(pageable);
@@ -64,5 +65,10 @@ public class CastService {
                 .page(request.getPage())
                 .results(castRepository.findAllBy_idIn(objectIds))
                 .build();
+    }
+
+    public Object getCastByMovieId(Integer movieId) {
+        BasicDBObject movie = movieService.getDetailMovie(movieId);
+        return movie.get("credits");
     }
 }
