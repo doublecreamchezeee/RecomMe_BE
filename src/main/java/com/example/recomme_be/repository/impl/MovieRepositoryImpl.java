@@ -163,10 +163,10 @@ public class MovieRepositoryImpl implements MovieRepository {
         // Filter by release date range
         if (request.getFromDate() != null || request.getToDate() != null) {
             Criteria dateCriteria = new Criteria("release_date");
-            if (request.getFromDate() != null) {
+            if (request.getFromDate() != null && StringUtils.hasText(request.getFromDate())) {
                 dateCriteria = dateCriteria.gte(request.getFromDate());
             }
-            if (request.getToDate() != null) {
+            if (request.getToDate() != null && StringUtils.hasText(request.getToDate())) {
                 dateCriteria = dateCriteria.lte(request.getToDate());
             }
             query.addCriteria(dateCriteria);
