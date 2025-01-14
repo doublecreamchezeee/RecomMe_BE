@@ -231,7 +231,7 @@ public class MovieController {
                 .result(review)
                 .build();
     }
-
+    @PublicEndpoint
     // Get movie reviews
     @GetMapping("/{movieId}/reviews")
     public ApiResponse<List<Review>> getReviews(@PathVariable String movieId) {
