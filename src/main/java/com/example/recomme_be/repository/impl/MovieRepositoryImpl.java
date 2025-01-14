@@ -139,6 +139,23 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public List<BasicDBObject> filter(MoviesFilterRequest request) {
+
+        Query query = buildFilterQuery(request);
+        // Pagination
+        int skip = (request.getPage() - 1) * request.getPageSize();
+        query.skip(skip).limit(request.getPageSize());
+
+        return mongoTemplate.find(query, BasicDBObject.class, Movie.COLLECTION);
+    }
+
+    @Override
+    public long countByFilter(MoviesFilterRequest request) {
+        Query query = buildFilterQuery(request);
+        return mongoTemplate.count(query, Movie.COLLECTION);
+    }
+
+
+    private Query buildFilterQuery(MoviesFilterRequest request) {
         Query query = new Query();
 
         // Filter by genre IDs
@@ -183,12 +200,7 @@ public class MovieRepositoryImpl implements MovieRepository {
             }
             query.addCriteria(scoreCriteria);
         }
-
-        // Pagination
-        int skip = (request.getPage() - 1) * request.getPageSize();
-        query.skip(skip).limit(request.getPageSize());
-
-        return mongoTemplate.find(query, BasicDBObject.class, Movie.COLLECTION);
+        return query;
     }
 
 }
