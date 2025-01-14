@@ -46,7 +46,7 @@ public class MovieService {
 
         return TmdbMovieListResponse.builder()
                 .page(request.getPage())
-                .total_pages(count / request.getPage())
+                .total_pages((count / request.getPageSize()) + 1)
                 .total_results( count)
                 .results(movies)
                 .build();
