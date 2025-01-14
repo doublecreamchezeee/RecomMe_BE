@@ -24,7 +24,5 @@ public interface MovieRepository {
     List<BasicDBObject> getByIds(Collection<Integer> ids);
     List<BasicDBObject> getByObjectIds(Collection<String> objectIds);
     List<BasicDBObject> filter(MoviesFilterRequest request);
-
-
-//    List<BasicDBObject> getMovies(List<String> movieIds);
+    long countByFilter(MoviesFilterRequest request);
 }

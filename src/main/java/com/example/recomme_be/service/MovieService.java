@@ -42,8 +42,12 @@ public class MovieService {
 
     public TmdbMovieListResponse filter(MoviesFilterRequest request) {
         var movies =  movieRepository.filter(request);
+        int count = (int) movieRepository.countByFilter(request);
+
         return TmdbMovieListResponse.builder()
                 .page(request.getPage())
+                .total_pages(count / request.getPage())
+                .total_results( count)
                 .results(movies)
                 .build();
     }
