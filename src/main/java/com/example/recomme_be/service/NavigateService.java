@@ -14,4 +14,8 @@ public class NavigateService {
     public LLMNavigateResponse navigate(String query) {
         return llmClient.navigate(query);
     }
+
+    public Object ask(String query) {
+        return llmClient.ask(query);
+    }
 }

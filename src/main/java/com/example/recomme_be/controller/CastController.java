@@ -75,4 +75,14 @@ public class CastController {
                 .result(response)
                 .build();
     }
+    @PublicEndpoint
+    @GetMapping("/movie/{movieId}")
+    public ApiResponse<Object> getCastByMovieId(@PathVariable Integer movieId) {
+        var response = castService.getCastByMovieId(movieId);
+        return ApiResponse.<Object>builder()
+                .code(200)
+                .message("Fetched cast successfully")
+                .result(response)
+                .build();
+    }
 }

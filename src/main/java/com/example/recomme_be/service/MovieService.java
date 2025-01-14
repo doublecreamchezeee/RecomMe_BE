@@ -138,14 +138,18 @@ public class MovieService {
 
     // Rate a movie
     public Rating rateMovie(MovieRatingUpdateRequest request) {
-        Rating userRating = Rating.builder()
-                .movieId(request.getMovieId())
-                .rating(request.getRating())
-                .userId(request.getUserId())
-                .build();
-        ratingRepository.save(userRating);
+        Rating rating = ratingRepository.findByUserIdAndMovieId(request.getUserId(), request.getMovieId())
+                .orElseGet(() -> Rating.builder()
+                        .userId(request.getUserId())
+                        .movieId(request.getMovieId())
+                        .rating(request.getRating())
+                        .build()
+                );
+
+        rating.setRating(request.getRating());
+        ratingRepository.save(rating);
         movieRepository.updateMovieRating(request.getMovieId(), request.getRating());
-        return userRating;
+        return rating;
     }
 
     public List<Rating> getListRating(String userId) {
