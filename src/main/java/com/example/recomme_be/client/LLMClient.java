@@ -45,4 +45,23 @@ public class LLMClient {
         return restTemplate.postForObject(url, null, LLMNavigateResponse.class);
     }
 
+    public Object ask(String query) {
+        String collectionName;
+        if (query.toLowerCase().contains("movie") || query.toLowerCase().contains("movies")) {
+            collectionName = "movies";
+        } else if (query.toLowerCase().contains("cast") || query.toLowerCase().contains("casts")) {
+            collectionName = "cast";
+        } else {
+            collectionName = "default";
+        }
+
+        String url = UriComponentsBuilder.fromUriString(apiBaseUrl + "/rag/")
+                .queryParam("llm_api_key", geminiApiKey)
+                .queryParam("collection_name", collectionName)
+                .queryParam("query", query)
+                .toUriString();
+
+        return restTemplate.postForObject(url, null, String.class);
+    }
+
 }
